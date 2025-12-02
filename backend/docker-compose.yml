@@ -1,0 +1,42 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: flowers-joy-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: flowers-joy
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - flowers-joy-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flowers-joy-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      MONGODB_URI: mongodb://mongodb:27017/flowers-joy
+      JWT_SECRET: ${JWT_SECRET:-change-this-secret-in-production}
+      JWT_EXPIRE: 7d
+    depends_on:
+      - mongodb
+    networks:
+      - flowers-joy-network
+    volumes:
+      - ./src:/app/src
+      - ./dist:/app/dist
+
+volumes:
+  mongodb_data:
+
+networks:
+  flowers-joy-network:
+    driver: bridge

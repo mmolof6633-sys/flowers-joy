@@ -1,0 +1,20 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: flowers-joy-mongodb-dev
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: flowers-joy
+    volumes:
+      - mongodb_data_dev:/data/db
+    networks:
+      - flowers-joy-network-dev
+
+volumes:
+  mongodb_data_dev:
+
+networks:
+  flowers-joy-network-dev:
+    driver: bridge
