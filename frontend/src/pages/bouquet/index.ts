@@ -1,1 +1,1 @@
-export { BouquetPage } from './ui/BouquetPage';
+export { BouquetPageServer as BouquetPage } from './ui/BouquetPageServer';

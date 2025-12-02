@@ -1,1 +1,5 @@
-export { CatalogPage as default } from '@pages/catalog';
+import { CatalogPageServer } from '@pages/catalog/ui/CatalogPageServer';
+
+export default function CatalogPage() {
+  return <CatalogPageServer />;
+}

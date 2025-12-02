@@ -1,4 +1,4 @@
-import { CatalogPage } from '@pages/catalog';
+import { CatalogPageServer } from '@pages/catalog/ui/CatalogPageServer';
 
 interface PageProps {
   params: {
@@ -7,5 +7,5 @@ interface PageProps {
 }
 
 export default function Page({ params }: PageProps) {
-  return <CatalogPage categorySlug={params.category} />;
+  return <CatalogPageServer categorySlug={params.category} />;
 }

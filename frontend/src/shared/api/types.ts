@@ -1,10 +1,18 @@
 export interface IBouquet {
   id: string;
+  _id?: string; // Для совместимости с MongoDB
   name: string;
+  slug?: string;
   description?: string;
   price: number;
-  imageUrl?: string;
-  categoryId: string;
+  oldPrice?: number;
+  images: string[];
+  imageUrl?: string; // Для обратной совместимости, будет первое изображение из массива
+  categoryIds?: string[];
+  categoryId?: string; // Для обратной совместимости
+  tags?: string[];
+  inStock?: boolean;
+  sortOrder?: number;
   createdAt: string;
   updatedAt: string;
 }

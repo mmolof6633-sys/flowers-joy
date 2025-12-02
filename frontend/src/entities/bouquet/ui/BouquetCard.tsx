@@ -10,11 +10,11 @@ interface BouquetCardProps {
 export function BouquetCard({ bouquet }: BouquetCardProps) {
   return (
     <Card>
-      {bouquet.imageUrl && (
+      {(bouquet.images?.[0] || bouquet.imageUrl) && (
         <CardMedia
           component="img"
           height="200"
-          image={bouquet.imageUrl}
+          image={bouquet.images?.[0] || bouquet.imageUrl}
           alt={bouquet.name}
         />
       )}

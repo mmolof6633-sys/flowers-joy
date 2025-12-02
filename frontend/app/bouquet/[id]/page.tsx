@@ -1,4 +1,4 @@
-import { BouquetPage } from '@pages/bouquet';
+import { BouquetPageServer } from '@pages/bouquet/ui/BouquetPageServer';
 
 interface PageProps {
   params: {
@@ -7,5 +7,5 @@ interface PageProps {
 }
 
 export default function Page({ params }: PageProps) {
-  return <BouquetPage bouquetId={params.id} />;
+  return <BouquetPageServer bouquetId={params.id} />;
 }
