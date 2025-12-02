@@ -11,7 +11,7 @@ if [ -z "$TOKEN" ]; then
   echo "Использование: ./add-bouquet.sh YOUR_TOKEN"
   echo ""
   echo "Получить токен:"
-  echo "curl -X POST http://localhost:3000/api/auth/login \\"
+  echo "curl -X POST http://localhost:3001/api/auth/login \\"
   echo "  -H 'Content-Type: application/json' \\"
   echo "  -d '{\"email\":\"admin@flowers-joy.ru\",\"password\":\"admin123\"}'"
   exit 1

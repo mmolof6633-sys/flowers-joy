@@ -41,7 +41,7 @@ cp .env.example .env
 4. **Настройте переменные окружения в `.env`:**
 
 ```env
-PORT=3000
+PORT=3001
 NODE_ENV=development
 MONGODB_URI=mongodb://localhost:27017/flowers-joy
 JWT_SECRET=your-super-secret-jwt-key
@@ -95,7 +95,7 @@ npm run seed
 npm run dev
 ```
 
-Сервер запустится на `http://localhost:3000` с hot-reload.
+Сервер запустится на `http://localhost:3001` с hot-reload.
 
 ### Production
 
@@ -109,7 +109,7 @@ npm start
 После запуска сервера Swagger документация доступна по адресу:
 
 ```
-http://localhost:3000/api-docs
+http://localhost:3001/api-docs
 ```
 
 ## 🔐 Аутентификация
