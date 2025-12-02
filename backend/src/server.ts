@@ -13,7 +13,7 @@ import { errorHandler, notFound } from "./middleware/errorHandler";
 dotenv.config();
 
 const app: Application = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Подключение к базе данных
 connectDB();
