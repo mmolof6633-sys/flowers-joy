@@ -9,4 +9,3 @@ interface PageProps {
 export default function Page({ params }: PageProps) {
   return <BouquetPage bouquetId={params.id} />;
 }
-
