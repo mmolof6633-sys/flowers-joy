@@ -112,3 +112,24 @@ export async function getCategoryBySlug(
     return null;
   }
 }
+
+/**
+ * Загружает рекомендуемые букеты на сервере
+ */
+export async function getRecommendedBouquets(limit: number = 8): Promise<IApiResponse<IBouquet[]>> {
+  try {
+    const response = await apiClient.get<{
+      success: boolean;
+      data: IBouquet[];
+    }>(`/bouquets/recommended?limit=${limit}`);
+    return {
+      data: response.data || [],
+    };
+  } catch (error) {
+    console.error('Failed to fetch recommended bouquets:', error);
+    return {
+      data: [],
+      message: 'Не удалось загрузить рекомендуемые букеты',
+    };
+  }
+}

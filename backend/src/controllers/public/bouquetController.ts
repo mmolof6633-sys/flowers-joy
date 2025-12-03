@@ -51,3 +51,15 @@ export const getBouquetBySlug = asyncHandler(
     });
   }
 );
+
+export const getRecommendedBouquets = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const limit = req.query.limit ? Number(req.query.limit) : 8;
+    const bouquets = await BouquetService.getRecommended(limit);
+
+    res.json({
+      success: true,
+      data: bouquets,
+    });
+  }
+);

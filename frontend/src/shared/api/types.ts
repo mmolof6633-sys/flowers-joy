@@ -13,6 +13,8 @@ export interface IBouquet {
   tags?: string[];
   inStock?: boolean;
   sortOrder?: number;
+  isRecommended?: boolean;
+  recommendedOrder?: number;
   createdAt: string;
   updatedAt: string;
 }

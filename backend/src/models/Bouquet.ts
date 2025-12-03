@@ -11,6 +11,8 @@ export interface IBouquet extends Document {
   tags: string[];
   inStock: boolean;
   sortOrder: number;
+  isRecommended: boolean;
+  recommendedOrder: number;
   description?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -67,6 +69,14 @@ const BouquetSchema = new Schema<IBouquet>(
       type: Number,
       default: 0,
     },
+    isRecommended: {
+      type: Boolean,
+      default: false,
+    },
+    recommendedOrder: {
+      type: Number,
+      default: 0,
+    },
     description: {
       type: String,
       trim: true,
@@ -90,5 +100,6 @@ BouquetSchema.pre("save", function (this: IBouquet, next: () => void) {
 BouquetSchema.index({ categoryIds: 1 });
 BouquetSchema.index({ inStock: 1, sortOrder: 1 });
 BouquetSchema.index({ price: 1 });
+BouquetSchema.index({ isRecommended: 1, recommendedOrder: 1 });
 
 export const Bouquet = mongoose.model<IBouquet>("Bouquet", BouquetSchema);

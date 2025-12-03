@@ -2,10 +2,10 @@ import { BouquetPageServer } from '@pages/bouquet/ui/BouquetPageServer';
 
 interface PageProps {
   params: {
-    id: string;
+    slug: string;
   };
 }
 
 export default function Page({ params }: PageProps) {
-  return <BouquetPageServer bouquetId={params.id} />;
+  return <BouquetPageServer bouquetSlug={params.slug} />;
 }

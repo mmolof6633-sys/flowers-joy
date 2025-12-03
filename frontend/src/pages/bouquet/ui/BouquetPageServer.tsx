@@ -3,13 +3,13 @@ import { getBouquetBySlug } from '@shared/api/server';
 import { BouquetClient } from './BouquetClient';
 
 interface BouquetPageServerProps {
-  bouquetId: string;
+  bouquetSlug: string;
 }
 
-export async function BouquetPageServer({ bouquetId }: BouquetPageServerProps) {
+export async function BouquetPageServer({ bouquetSlug }: BouquetPageServerProps) {
   // Загружаем букет на сервере
   // API использует slug, но может принимать и ID
-  const bouquetResponse = await getBouquetBySlug(bouquetId);
+  const bouquetResponse = await getBouquetBySlug(bouquetSlug);
 
   if (!bouquetResponse || !bouquetResponse.data) {
     notFound();
@@ -17,4 +17,5 @@ export async function BouquetPageServer({ bouquetId }: BouquetPageServerProps) {
 
   return <BouquetClient bouquet={bouquetResponse.data} />;
 }
+
 

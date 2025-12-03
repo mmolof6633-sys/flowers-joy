@@ -186,4 +186,14 @@ export class BouquetService {
 
     await Bouquet.bulkWrite(bulkOps);
   }
+
+  static async getRecommended(limit: number = 8): Promise<IBouquet[]> {
+    return await Bouquet.find({
+      isRecommended: true,
+      inStock: true,
+    })
+      .populate("categoryIds", "name slug image")
+      .sort({ recommendedOrder: 1, sortOrder: 1, createdAt: -1 })
+      .limit(limit);
+  }
 }
