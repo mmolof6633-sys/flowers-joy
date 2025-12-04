@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Typography, Grid, Box } from '@mui/material';
+import { Container, Typography, Box } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useGetRecommendedBouquetsQuery } from '@features/catalog';
 import { BouquetCard } from '@entities/bouquet';
@@ -8,6 +8,7 @@ import { IBouquet } from '@entities/bouquet';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import mainImage from '@shared/assets/image/main.webp';
+import { Carousel } from '@shared/ui';
 
 interface HomePageClientProps {
   initialRecommendedBouquets: IBouquet[];
@@ -61,13 +62,11 @@ export function HomePageClient({ initialRecommendedBouquets }: HomePageClientPro
               <Typography>Загрузка...</Typography>
             </Box>
           ) : bouquets.length > 0 ? (
-            <Grid container spacing={3}>
+            <Carousel maxItemsDesktop={4} spacing={3}>
               {bouquets.map((bouquet) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={bouquet.id || bouquet._id}>
-                  <BouquetCard bouquet={bouquet} />
-                </Grid>
+                <BouquetCard key={bouquet.id || bouquet._id} bouquet={bouquet} />
               ))}
-            </Grid>
+            </Carousel>
           ) : (
             <Typography color="text.secondary">Рекомендуемые букеты пока не добавлены</Typography>
           )}
