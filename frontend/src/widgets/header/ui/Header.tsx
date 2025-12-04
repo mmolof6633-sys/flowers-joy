@@ -21,6 +21,25 @@ export function Header() {
     setMenuAnchor(null);
   };
 
+  const homeLink = (
+    <Typography
+      component={Link}
+      href="/"
+      variant="h6"
+      sx={{
+        textDecoration: 'none',
+        color: 'inherit',
+        fontWeight: 500,
+        mr: 3,
+        '&:hover': {
+          color: theme.palette.primary.light,
+        },
+      }}
+    >
+      Главная
+    </Typography>
+  );
+
   const catalogLink = (
     <Typography
       component={Link}
@@ -72,14 +91,16 @@ export function Header() {
           </Typography>
         </Box>
 
-        {/* Центральный пункт "Каталог" на десктопе */}
+        {/* Центральные пункты навигации на десктопе */}
         <Box
           sx={{
             flexGrow: 1,
             display: { xs: 'none', sm: 'flex' },
             justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
+          {homeLink}
           {catalogLink}
         </Box>
 
@@ -108,6 +129,9 @@ export function Header() {
               horizontal: 'right',
             }}
           >
+            <MenuItem component={Link} href="/" onClick={handleCloseMenu}>
+              Главная
+            </MenuItem>
             <MenuItem component={Link} href="/catalog" onClick={handleCloseMenu}>
               Каталог
             </MenuItem>
