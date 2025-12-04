@@ -1,15 +1,118 @@
 'use client';
 
-import { AppBar, Toolbar, Typography, Box } from '@mui/material';
+import { useState } from 'react';
+import Link from 'next/link';
+import { AppBar, Toolbar, Typography, Box, IconButton, Menu, MenuItem } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import DehazeIcon from '@mui/icons-material/Dehaze';
 
 export function Header() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+
+  const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setMenuAnchor(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setMenuAnchor(null);
+  };
+
+  const catalogLink = (
+    <Typography
+      component={Link}
+      href="/catalog"
+      variant="h6"
+      sx={{
+        textDecoration: 'none',
+        color: 'inherit',
+        fontWeight: 500,
+        '&:hover': {
+          color: theme.palette.primary.light,
+        },
+      }}
+    >
+      Каталог
+    </Typography>
+  );
+
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Flowers Joy
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 2 }}>{/* Navigation items */}</Box>
+    <AppBar position="sticky" color="default" elevation={0}>
+      <Toolbar
+        sx={{
+          maxWidth: 1200,
+          width: '100%',
+          mx: 'auto',
+          px: { xs: 2, sm: 3 },
+        }}
+      >
+        {/* Логотип / название */}
+        <Box
+          sx={{
+            flexGrow: isMobile ? 1 : 0,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Typography
+            variant="h6"
+            component={Link}
+            href="/"
+            sx={{
+              textDecoration: 'none',
+              color: 'inherit',
+              fontWeight: 600,
+              letterSpacing: 0.5,
+            }}
+          >
+            Flowers Joy
+          </Typography>
+        </Box>
+
+        {/* Центральный пункт "Каталог" на десктопе */}
+        <Box
+          sx={{
+            flexGrow: 1,
+            display: { xs: 'none', sm: 'flex' },
+            justifyContent: 'center',
+          }}
+        >
+          {catalogLink}
+        </Box>
+
+        {/* Бургер-меню на мобильном */}
+        <Box
+          sx={{
+            display: { xs: 'flex', sm: 'none' },
+            justifyContent: 'flex-end',
+            flexGrow: 0,
+          }}
+        >
+          <IconButton edge="end" color="inherit" aria-label="menu" onClick={handleOpenMenu}>
+            <DehazeIcon fontSize="large" />
+          </IconButton>
+
+          <Menu
+            anchorEl={menuAnchor}
+            open={Boolean(menuAnchor)}
+            onClose={handleCloseMenu}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem component={Link} href="/catalog" onClick={handleCloseMenu}>
+              Каталог
+            </MenuItem>
+          </Menu>
+        </Box>
       </Toolbar>
     </AppBar>
   );

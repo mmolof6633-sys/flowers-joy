@@ -17,5 +17,3 @@ export async function BouquetPageServer({ bouquetSlug }: BouquetPageServerProps)
 
   return <BouquetClient bouquet={bouquetResponse.data} />;
 }
-
-
