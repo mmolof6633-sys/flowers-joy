@@ -16,7 +16,10 @@ interface HomePageClientProps {
   initialCategories: ICategory[];
 }
 
-export function HomePageClient({ initialRecommendedBouquets, initialCategories }: HomePageClientProps) {
+export function HomePageClient({
+  initialRecommendedBouquets,
+  initialCategories,
+}: HomePageClientProps) {
   const queryClient = useQueryClient();
 
   // Гидратируем начальные данные в React Query кеш

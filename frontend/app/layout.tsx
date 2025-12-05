@@ -2,6 +2,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto } from 'next/font/google';
 import { Providers } from '@shared/providers/Providers';
 import { Header } from '@widgets/header';
+import { Footer } from '@widgets/footer';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -27,7 +28,8 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <Providers>
             <Header />
-            <main>{children}</main>
+            <main style={{ flex: 1 }}>{children}</main>
+            <Footer />
           </Providers>
         </AppRouterCacheProvider>
       </body>
