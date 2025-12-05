@@ -7,68 +7,77 @@ import { connectDB } from "../config/database";
 dotenv.config();
 
 const categoriesData = [
-  { 
-    name: "ВСЕ", 
-    slug: "vse", 
-    sortOrder: 0, 
+  {
+    name: "ВСЕ",
+    slug: "vse",
+    sortOrder: 0,
     isActive: true,
-    image: "https://images.unsplash.com/photo-1563241521-5eda60a6ac72?w=800&h=600&fit=crop"
+    image:
+      "https://images.unsplash.com/photo-1563241521-5eda60a6ac72?w=800&h=600&fit=crop",
   },
   {
     name: "АВТОРСКИЕ БУКЕТЫ",
     slug: "authorskie",
     sortOrder: 1,
     isActive: true,
-    image: "https://images.unsplash.com/photo-1582794543139-8ac38803e6b7?w=800&h=600&fit=crop"
+    image:
+      "https://images.unsplash.com/photo-1582794543139-8ac38803e6b7?w=800&h=600&fit=crop",
   },
-  { 
-    name: "МОНОБУКЕТЫ", 
-    slug: "monobukety", 
-    sortOrder: 2, 
+  {
+    name: "МОНОБУКЕТЫ",
+    slug: "monobukety",
+    sortOrder: 2,
     isActive: true,
-    image: "https://images.unsplash.com/photo-1606041008023-472dfb5e8f11?w=800&h=600&fit=crop"
+    image:
+      "https://images.unsplash.com/photo-1606041008023-472dfb5e8f11?w=800&h=600&fit=crop",
   },
-  { 
-    name: "КОРОБКА", 
-    slug: "korobka", 
-    sortOrder: 3, 
+  {
+    name: "КОРОБКА",
+    slug: "korobka",
+    sortOrder: 3,
     isActive: true,
-    image: "https://images.unsplash.com/photo-1606800053560-ee5e68e4e0a1?w=800&h=600&fit=crop"
+    image:
+      "https://images.unsplash.com/photo-1606800053560-ee5e68e4e0a1?w=800&h=600&fit=crop",
   },
-  { 
-    name: "КОРЗИНА", 
-    slug: "korzina", 
-    sortOrder: 4, 
+  {
+    name: "КОРЗИНА",
+    slug: "korzina",
+    sortOrder: 4,
     isActive: true,
-    image: "https://images.unsplash.com/photo-1606800053560-ee5e68e4e0a1?w=800&h=600&fit=crop"
+    image:
+      "https://images.unsplash.com/photo-1606800053560-ee5e68e4e0a1?w=800&h=600&fit=crop",
   },
-  { 
-    name: "ДУО&ТРИО", 
-    slug: "duo-trio", 
-    sortOrder: 5, 
+  {
+    name: "ДУО&ТРИО",
+    slug: "duo-trio",
+    sortOrder: 5,
     isActive: true,
-    image: "https://images.unsplash.com/photo-1606041008023-472dfb5e8f11?w=800&h=600&fit=crop"
+    image:
+      "https://images.unsplash.com/photo-1606041008023-472dfb5e8f11?w=800&h=600&fit=crop",
   },
-  { 
-    name: "НЕВЕСТЫ", 
-    slug: "nevesty", 
-    sortOrder: 6, 
+  {
+    name: "НЕВЕСТЫ",
+    slug: "nevesty",
+    sortOrder: 6,
     isActive: true,
-    image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=600&fit=crop"
+    image:
+      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=600&fit=crop",
   },
-  { 
-    name: "ИНТЕРЬЕР", 
-    slug: "interer", 
-    sortOrder: 7, 
+  {
+    name: "ИНТЕРЬЕР",
+    slug: "interer",
+    sortOrder: 7,
     isActive: true,
-    image: "https://images.unsplash.com/photo-1606041008023-472dfb5e8f11?w=800&h=600&fit=crop"
+    image:
+      "https://images.unsplash.com/photo-1606041008023-472dfb5e8f11?w=800&h=600&fit=crop",
   },
-  { 
-    name: "СЕЗОН", 
-    slug: "sezon", 
-    sortOrder: 8, 
+  {
+    name: "СЕЗОН",
+    slug: "sezon",
+    sortOrder: 8,
     isActive: true,
-    image: "https://images.unsplash.com/photo-1606041008023-472dfb5e8f11?w=800&h=600&fit=crop"
+    image:
+      "https://images.unsplash.com/photo-1606041008023-472dfb5e8f11?w=800&h=600&fit=crop",
   },
 ];
 
@@ -287,7 +296,11 @@ async function seed() {
 
       return {
         name: bouquet.name,
-        slug: slugify(bouquet.name, { lower: true, strict: true, locale: "ru" }),
+        slug: slugify(bouquet.name, {
+          lower: true,
+          strict: true,
+          locale: "ru",
+        }),
         price: bouquet.price,
         oldPrice: bouquet.oldPrice,
         images: bouquet.images,

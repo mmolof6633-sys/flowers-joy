@@ -10,5 +10,10 @@ export async function HomePageServer() {
   const categoriesResponse = await getCategories();
   const categories = categoriesResponse.data || [];
 
-  return <HomePageClient initialRecommendedBouquets={recommendedBouquets} initialCategories={categories} />;
+  return (
+    <HomePageClient
+      initialRecommendedBouquets={recommendedBouquets}
+      initialCategories={categories}
+    />
+  );
 }
