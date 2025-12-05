@@ -29,7 +29,7 @@ export function Header() {
       sx={{
         textDecoration: 'none',
         color: 'inherit',
-        fontWeight: 500,
+        fontWeight: 400,
         mr: 3,
         '&:hover': {
           color: theme.palette.primary.light,
@@ -48,7 +48,7 @@ export function Header() {
       sx={{
         textDecoration: 'none',
         color: 'inherit',
-        fontWeight: 500,
+        fontWeight: 400,
         '&:hover': {
           color: theme.palette.primary.light,
         },
