@@ -1,11 +1,12 @@
 import { BouquetPageServer } from '@pages/bouquet/ui/BouquetPageServer';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-export default function Page({ params }: PageProps) {
-  return <BouquetPageServer bouquetSlug={params.slug} />;
+export default async function Page({ params }: PageProps) {
+  const { slug } = await params;
+  return <BouquetPageServer bouquetSlug={slug} />;
 }
