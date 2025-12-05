@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Container, Grid, Typography } from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter, usePathname } from 'next/navigation';
 import { CatalogFilters } from '@features/catalog';
 import { BouquetCard } from '@entities/bouquet';
 import { IBouquet } from '@entities/bouquet';
@@ -28,29 +29,54 @@ export function CatalogClient({
   initialCategorySlug,
 }: CatalogClientProps) {
   const queryClient = useQueryClient();
-  const initialCategory = useMemo(
-    () => categories.find((cat) => cat.slug === initialCategorySlug),
-    [categories, initialCategorySlug]
+  const router = useRouter();
+  const pathname = usePathname();
+  
+  // Получаем текущий slug из URL (приоритет) или из пропсов
+  const currentCategorySlug = useMemo(() => {
+    // Извлекаем slug из пути /catalog/[category]
+    const match = pathname?.match(/^\/catalog\/([^/]+)$/);
+    const slugFromPath = match ? match[1] : undefined;
+    // Используем slug из пути, если он есть, иначе из пропсов
+    return slugFromPath || initialCategorySlug;
+  }, [pathname, initialCategorySlug]);
+  
+  const currentCategory = useMemo(
+    () => categories.find((cat) => cat.slug === currentCategorySlug),
+    [categories, currentCategorySlug]
   );
+  
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(
-    getCategoryId(initialCategory)
+    getCategoryId(currentCategory)
   );
 
-  // Синхронизируем состояние с URL при изменении initialCategorySlug
+  // Синхронизируем состояние с URL при изменении currentCategorySlug
   useEffect(() => {
-    setSelectedCategoryId(getCategoryId(initialCategory));
-  }, [initialCategory]);
+    const category = categories.find((cat) => cat.slug === currentCategorySlug);
+    setSelectedCategoryId(getCategoryId(category));
+  }, [currentCategorySlug, categories]);
+
+  // Инвалидируем кеш при изменении категории для принудительного обновления данных
+  useEffect(() => {
+    console.log('Current category slug changed to:', currentCategorySlug);
+    // Инвалидируем запросы для текущей категории, чтобы гарантировать обновление
+    queryClient.invalidateQueries({ 
+      queryKey: ['bouquets', { categorySlug: currentCategorySlug }] 
+    });
+  }, [currentCategorySlug, queryClient]);
 
   // Гидратируем начальные данные в React Query кеш
   useEffect(() => {
     console.log('Categories received:', categories);
     console.log('First category structure:', categories[0]);
     queryClient.setQueryData(['categories'], { data: categories });
-    const initialCategoryId = getCategoryId(initialCategory);
-    queryClient.setQueryData(['bouquets', { categoryId: initialCategoryId }], {
-      data: initialBouquets,
-    });
-  }, [queryClient, categories, initialBouquets, initialCategory]);
+    // Гидратируем данные только для начальной категории
+    if (currentCategorySlug === initialCategorySlug) {
+      queryClient.setQueryData(['bouquets', { categorySlug: currentCategorySlug }], {
+        data: initialBouquets,
+      });
+    }
+  }, [queryClient, categories, initialBouquets, currentCategorySlug, initialCategorySlug]);
 
   // Получаем категорию по выбранному ID
   const selectedCategory = useMemo(
@@ -64,36 +90,39 @@ export function CatalogClient({
   // Обработчик изменения категории
   const handleCategoryChange = (categoryId: string | undefined) => {
     console.log('Category changed to:', categoryId);
-    setSelectedCategoryId(categoryId);
-    const category = categoryId ? categories.find((cat) => cat.id === categoryId) : undefined;
+    const category = categoryId
+      ? categories.find((cat) => getCategoryId(cat) === categoryId)
+      : undefined;
     const newPath = category ? `/catalog/${category.slug}` : '/catalog';
-    // Обновляем URL без перезагрузки страницы
-    window.history.pushState({}, '', newPath);
+    // Инвалидируем кеш для всех запросов букетов перед навигацией
+    queryClient.invalidateQueries({ queryKey: ['bouquets'] });
+    // Используем Next.js роутер для навигации
+    // Состояние обновится автоматически через pathname
+    router.push(newPath);
   };
 
   // Загружаем букеты с учетом выбранной категории
-  const initialCategoryId = getCategoryId(initialCategory);
-  const isInitialCategory = selectedCategoryId === initialCategoryId;
+  // Используем currentCategorySlug напрямую для синхронизации с URL
   const { data: bouquetsData, isLoading } = useQuery<IApiResponse<IBouquet[]>>({
-    queryKey: ['bouquets', { categoryId: selectedCategoryId }],
+    queryKey: ['bouquets', { categorySlug: currentCategorySlug }],
     queryFn: async () => {
-      console.log('Fetching bouquets for category:', selectedCategoryId);
-      // Вычисляем категорию внутри queryFn для актуальных данных
-      const category = selectedCategoryId
-        ? categories.find((cat) => getCategoryId(cat) === selectedCategoryId)
-        : undefined;
-      const queryParams = category?.slug ? `?category=${category.slug}` : '';
+      console.log('Fetching bouquets for category slug:', currentCategorySlug);
+      const queryParams = currentCategorySlug ? `?category=${currentCategorySlug}` : '';
       const url = `/bouquets${queryParams}`;
       console.log('Fetching from URL:', url);
       const response = await apiClient.get<{ success: boolean; data: IBouquet[] }>(url);
       console.log('Response received:', response);
       return { data: response.data || [] };
     },
-    initialData: isInitialCategory ? { data: initialBouquets } : undefined,
+    // Используем initialData только если текущий slug совпадает с initialCategorySlug
+    initialData: currentCategorySlug === initialCategorySlug ? { data: initialBouquets } : undefined,
     enabled: true, // Всегда включен
+    refetchOnMount: 'always', // Всегда перезапрашиваем при монтировании
+    staleTime: 0, // Данные сразу считаются устаревшими, чтобы гарантировать обновление
   });
 
-  const bouquets = bouquetsData?.data || initialBouquets;
+  // Используем данные из React Query, если они есть, иначе initialBouquets только для начальной категории
+  const bouquets = bouquetsData?.data ?? (currentCategorySlug === initialCategorySlug ? initialBouquets : []);
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
