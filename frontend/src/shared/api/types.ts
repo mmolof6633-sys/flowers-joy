@@ -1,3 +1,12 @@
+// Тип для категории после populate
+export interface IPopulatedCategory {
+  _id?: string;
+  id?: string;
+  name: string;
+  slug: string;
+  image?: string;
+}
+
 export interface IBouquet {
   id: string;
   _id?: string; // Для совместимости с MongoDB
@@ -8,7 +17,7 @@ export interface IBouquet {
   oldPrice?: number;
   images: string[];
   imageUrl?: string; // Для обратной совместимости, будет первое изображение из массива
-  categoryIds?: string[];
+  categoryIds?: (string | IPopulatedCategory)[]; // Может быть массивом строк или объектов после populate
   categoryId?: string; // Для обратной совместимости
   tags?: string[];
   inStock?: boolean;
