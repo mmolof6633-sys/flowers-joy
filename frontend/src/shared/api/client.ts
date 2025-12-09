@@ -16,6 +16,7 @@ export const apiClient = {
     const baseUrl = getApiUrl();
     const response = await fetch(`${baseUrl}${endpoint}`, {
       ...options,
+      credentials: 'include', // Для работы с cookies
       // Для сервера используем revalidate вместо no-store для лучшей производительности
       ...(typeof window === 'undefined'
         ? { next: { revalidate: 60 } } // Revalidate каждые 60 секунд на сервере
@@ -33,7 +34,34 @@ export const apiClient = {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include', // Для работы с cookies
       body: data ? JSON.stringify(data) : undefined,
+    });
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.statusText}`);
+    }
+    return response.json();
+  },
+  put: async <T>(endpoint: string, data?: unknown): Promise<T> => {
+    const baseUrl = getApiUrl();
+    const response = await fetch(`${baseUrl}${endpoint}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // Для работы с cookies
+      body: data ? JSON.stringify(data) : undefined,
+    });
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.statusText}`);
+    }
+    return response.json();
+  },
+  delete: async <T>(endpoint: string): Promise<T> => {
+    const baseUrl = getApiUrl();
+    const response = await fetch(`${baseUrl}${endpoint}`, {
+      method: 'DELETE',
+      credentials: 'include', // Для работы с cookies
     });
     if (!response.ok) {
       throw new Error(`API Error: ${response.statusText}`);

@@ -1,22 +1,25 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  Container, 
-  Typography, 
-  Box, 
-  Button, 
-  Grid, 
-  Paper, 
+import {
+  Container,
+  Typography,
+  Box,
+  Button,
+  Grid,
+  Paper,
   Chip,
   Stack,
   Divider,
   IconButton,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { IBouquet, IPopulatedCategory } from '@shared/api/types';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useAddToCartMutation } from '@features/cart';
 
 interface BouquetClientProps {
   bouquet: IBouquet;
@@ -25,18 +28,35 @@ interface BouquetClientProps {
 export function BouquetClient({ bouquet }: BouquetClientProps) {
   const router = useRouter();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const addToCartMutation = useAddToCartMutation();
+
+  const handleAddToCart = async () => {
+    if (!bouquet.id && !bouquet._id) return;
+
+    try {
+      await addToCartMutation.mutateAsync({
+        bouquetId: bouquet.id || bouquet._id || '',
+        quantity: 1,
+      });
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('Ошибка при добавлении в корзину:', error);
+    }
+  };
+
   // Получаем изображения
-  const images = bouquet.images && bouquet.images.length > 0 
-    ? bouquet.images 
-    : bouquet.imageUrl 
-    ? [bouquet.imageUrl] 
-    : [];
-  
+  const images =
+    bouquet.images && bouquet.images.length > 0
+      ? bouquet.images
+      : bouquet.imageUrl
+        ? [bouquet.imageUrl]
+        : [];
+
   // Получаем категории (могут быть объектами после populate)
-  const categories: IPopulatedCategory[] = Array.isArray(bouquet.categoryIds) 
-    ? bouquet.categoryIds.filter((cat): cat is IPopulatedCategory => 
-        typeof cat === 'object' && cat !== null && 'name' in cat
+  const categories: IPopulatedCategory[] = Array.isArray(bouquet.categoryIds)
+    ? bouquet.categoryIds.filter(
+        (cat): cat is IPopulatedCategory => typeof cat === 'object' && cat !== null && 'name' in cat
       )
     : [];
 
@@ -47,11 +67,7 @@ export function BouquetClient({ bouquet }: BouquetClientProps) {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box sx={{ mb: 3 }}>
-        <IconButton 
-          onClick={() => router.back()}
-          sx={{ mb: 2 }}
-          aria-label="назад"
-        >
+        <IconButton onClick={() => router.back()} sx={{ mb: 2 }} aria-label="назад">
           <ArrowBackIcon />
         </IconButton>
       </Box>
@@ -81,7 +97,7 @@ export function BouquetClient({ bouquet }: BouquetClientProps) {
                   priority
                 />
               </Box>
-              
+
               {/* Миниатюры (если больше одного изображения) */}
               {images.length > 1 && (
                 <Grid container spacing={1}>
@@ -162,12 +178,7 @@ export function BouquetClient({ bouquet }: BouquetClientProps) {
             <Box sx={{ mb: 2 }}>
               <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                 {bouquet.tags.map((tag, index) => (
-                  <Chip
-                    key={index}
-                    label={tag}
-                    size="small"
-                    variant="outlined"
-                  />
+                  <Chip key={index} label={tag} size="small" variant="outlined" />
                 ))}
               </Stack>
             </Box>
@@ -219,18 +230,33 @@ export function BouquetClient({ bouquet }: BouquetClientProps) {
           </Box>
 
           {/* Кнопка добавления в корзину */}
-          <Button 
-            variant="contained" 
-            size="large" 
-            fullWidth 
+          <Button
+            variant="contained"
+            size="large"
+            fullWidth
             sx={{ mt: 2 }}
-            disabled={bouquet.inStock === false}
+            disabled={bouquet.inStock === false || addToCartMutation.isPending}
+            onClick={handleAddToCart}
           >
-            {bouquet.inStock !== false ? 'Добавить в корзину' : 'Нет в наличии'}
+            {addToCartMutation.isPending
+              ? 'Добавление...'
+              : bouquet.inStock !== false
+                ? 'Добавить в корзину'
+                : 'Нет в наличии'}
           </Button>
         </Grid>
       </Grid>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+          Товар добавлен в корзину!
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
-

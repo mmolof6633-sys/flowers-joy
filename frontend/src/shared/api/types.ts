@@ -47,3 +47,30 @@ export interface IApiError {
   message: string;
   statusCode: number;
 }
+
+// Типы для корзины
+export interface ICartItem {
+  bouquetId: string;
+  bouquet: IBouquet;
+  quantity: number;
+  totalPrice: number;
+}
+
+export interface ICart {
+  items: ICartItem[];
+  totalItems: number;
+  totalPrice: number;
+}
+
+export interface ICartResponse {
+  success: boolean;
+  data: ICart;
+  message?: string;
+}
+
+export interface ICartItemCountResponse {
+  success: boolean;
+  data: {
+    itemCount: number;
+  };
+}
