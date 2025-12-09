@@ -74,3 +74,93 @@ export interface ICartItemCountResponse {
     itemCount: number;
   };
 }
+
+// Типы для заказов
+export interface IOrderItem {
+  bouquetId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+}
+
+export interface IOrder {
+  _id: string;
+  id?: string;
+  orderNumber: string;
+  items: IOrderItem[];
+  totalAmount: number;
+  customerInfo: {
+    name: string;
+    phone: string;
+    email: string;
+    comment?: string;
+  };
+  recipientInfo: {
+    isDifferentPerson: boolean;
+    name?: string;
+    phone?: string;
+  };
+  card: {
+    enabled: boolean;
+    text?: string;
+  };
+  isAnonymous: boolean;
+  askRecipientForDelivery: boolean;
+  deliveryAddress?: {
+    street: string;
+    house: string;
+    apartment?: string;
+    entrance?: string;
+    floor?: string;
+    intercom?: string;
+    comment?: string;
+  };
+  deliveryDate?: string;
+  deliveryTime?: string;
+  deliveryMethod: "pickup" | "courier";
+  paymentMethod: "card" | "cash";
+  paymentStatus: "pending" | "paid" | "failed" | "refunded";
+  orderStatus: "new" | "confirmed" | "preparing" | "delivering" | "delivered" | "cancelled";
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ICreateOrderData {
+  customerInfo: {
+    name: string;
+    phone: string;
+    email: string;
+    comment?: string;
+  };
+  recipientInfo: {
+    isDifferentPerson: boolean;
+    name?: string;
+    phone?: string;
+  };
+  card: {
+    enabled: boolean;
+    text?: string;
+  };
+  isAnonymous: boolean;
+  askRecipientForDelivery: boolean;
+  deliveryAddress?: {
+    street: string;
+    house: string;
+    apartment?: string;
+    entrance?: string;
+    floor?: string;
+    intercom?: string;
+    comment?: string;
+  };
+  deliveryDate?: string;
+  deliveryTime?: string;
+  deliveryMethod: "pickup" | "courier";
+  paymentMethod: "card" | "cash";
+}
+
+export interface IOrderResponse {
+  success: boolean;
+  message?: string;
+  data: IOrder;
+}

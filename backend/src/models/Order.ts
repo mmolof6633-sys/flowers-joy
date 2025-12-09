@@ -11,9 +11,33 @@ export interface IOrderItem {
 export interface IOrder extends Document {
   orderNumber: string;
   userId?: mongoose.Types.ObjectId;
+  sessionId?: string;
   items: IOrderItem[];
   totalAmount: number;
-  deliveryAddress: {
+  // Данные покупателя
+  customerInfo: {
+    name: string;
+    phone: string;
+    email: string;
+    comment?: string;
+  };
+  // Данные получателя
+  recipientInfo: {
+    isDifferentPerson: boolean;
+    name?: string;
+    phone?: string;
+  };
+  // Открытка
+  card: {
+    enabled: boolean;
+    text?: string;
+  };
+  // Анонимно
+  isAnonymous: boolean;
+  // Уточнить информацию о доставке у получателя
+  askRecipientForDelivery: boolean;
+  // Данные доставки (если не нужно уточнять у получателя)
+  deliveryAddress?: {
     street: string;
     house: string;
     apartment?: string;
@@ -22,13 +46,11 @@ export interface IOrder extends Document {
     intercom?: string;
     comment?: string;
   };
-  recipientInfo: {
-    name: string;
-    phone: string;
-    email?: string;
-  };
-  deliveryDate: Date;
-  deliveryTime: string;
+  deliveryDate?: Date;
+  deliveryTime?: string;
+  // Способ доставки
+  deliveryMethod: "pickup" | "courier";
+  // Способ оплаты
   paymentMethod: "card" | "cash";
   paymentStatus: "pending" | "paid" | "failed" | "refunded";
   orderStatus:
@@ -80,6 +102,9 @@ const OrderSchema = new Schema<IOrder>(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    sessionId: {
+      type: String,
+    },
     items: {
       type: [OrderItemSchema],
       required: true,
@@ -93,28 +118,47 @@ const OrderSchema = new Schema<IOrder>(
       required: true,
       min: 0,
     },
+    // Данные покупателя
+    customerInfo: {
+      name: { type: String, required: true },
+      phone: { type: String, required: true },
+      email: { type: String, required: true },
+      comment: String,
+    },
+    // Данные получателя
+    recipientInfo: {
+      isDifferentPerson: { type: Boolean, default: false },
+      name: String,
+      phone: String,
+    },
+    // Открытка
+    card: {
+      enabled: { type: Boolean, default: false },
+      text: String,
+    },
+    // Анонимно
+    isAnonymous: { type: Boolean, default: false },
+    // Уточнить информацию о доставке у получателя
+    askRecipientForDelivery: { type: Boolean, default: false },
+    // Данные доставки (если не нужно уточнять у получателя)
     deliveryAddress: {
-      street: { type: String, required: true },
-      house: { type: String, required: true },
+      street: String,
+      house: String,
       apartment: String,
       entrance: String,
       floor: String,
       intercom: String,
       comment: String,
     },
-    recipientInfo: {
-      name: { type: String, required: true },
-      phone: { type: String, required: true },
-      email: String,
-    },
-    deliveryDate: {
-      type: Date,
-      required: true,
-    },
-    deliveryTime: {
+    deliveryDate: Date,
+    deliveryTime: String,
+    // Способ доставки
+    deliveryMethod: {
       type: String,
+      enum: ["pickup", "courier"],
       required: true,
     },
+    // Способ оплаты
     paymentMethod: {
       type: String,
       enum: ["card", "cash"],
@@ -156,6 +200,7 @@ OrderSchema.pre("save", async function (this: IOrder, next: () => void) {
 // Индексы
 OrderSchema.index({ orderNumber: 1 });
 OrderSchema.index({ userId: 1 });
+OrderSchema.index({ sessionId: 1 });
 OrderSchema.index({ orderStatus: 1 });
 OrderSchema.index({ createdAt: -1 });
 

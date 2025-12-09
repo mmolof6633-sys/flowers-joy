@@ -39,35 +39,34 @@ export const getCart = asyncHandler(
 
     // Вычисляем общую стоимость
     let totalPrice = 0;
-    const items = cart.items.map((item: any) => {
-      const bouquet = item.bouquetId;
-      if (bouquet && bouquet.price) {
-        const itemTotal = bouquet.price * item.quantity;
-        totalPrice += itemTotal;
-        const bouquetId = bouquet._id?.toString() || bouquet._id;
-        return {
-          bouquetId: bouquetId,
-          bouquet: {
-            _id: bouquetId,
-            id: bouquetId,
-            name: bouquet.name,
-            slug: bouquet.slug,
-            price: bouquet.price,
-            oldPrice: bouquet.oldPrice,
-            images: bouquet.images,
-            inStock: bouquet.inStock,
-          },
-          quantity: item.quantity,
-          totalPrice: itemTotal,
-        };
-      }
-      return null;
-    }).filter(Boolean);
+    const items = cart.items
+      .map((item: any) => {
+        const bouquet = item.bouquetId;
+        if (bouquet && bouquet.price) {
+          const itemTotal = bouquet.price * item.quantity;
+          totalPrice += itemTotal;
+          const bouquetId = bouquet._id?.toString() || bouquet._id;
+          return {
+            bouquetId: bouquetId,
+            bouquet: {
+              _id: bouquetId,
+              id: bouquetId,
+              name: bouquet.name,
+              slug: bouquet.slug,
+              price: bouquet.price,
+              oldPrice: bouquet.oldPrice,
+              images: bouquet.images,
+              inStock: bouquet.inStock,
+            },
+            quantity: item.quantity,
+            totalPrice: itemTotal,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
 
-    const totalItems = items.reduce(
-      (sum, item: any) => sum + item.quantity,
-      0
-    );
+    const totalItems = items.reduce((sum, item: any) => sum + item.quantity, 0);
 
     res.json({
       success: true,
@@ -125,7 +124,12 @@ export const updateCartItem = asyncHandler(
     const userId = req.user?._id?.toString();
     const sessionId = userId ? undefined : getSessionId(req, res);
 
-    await CartService.updateItemQuantity(bouquetId, quantity, userId, sessionId);
+    await CartService.updateItemQuantity(
+      bouquetId,
+      quantity,
+      userId,
+      sessionId
+    );
 
     res.json({
       success: true,
@@ -179,4 +183,3 @@ export const getCartItemCount = asyncHandler(
     });
   }
 );
-

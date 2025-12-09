@@ -5,6 +5,7 @@ import adminBouquetRoutes from "./admin/bouquetRoutes";
 import publicCategoryRoutes from "./public/categoryRoutes";
 import publicBouquetRoutes from "./public/bouquetRoutes";
 import cartRoutes from "./public/cartRoutes";
+import orderRoutes from "./public/orderRoutes";
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router.use("/auth", authRoutes);
 router.use("/categories", publicCategoryRoutes);
 router.use("/bouquets", publicBouquetRoutes);
 router.use("/cart", cartRoutes);
+router.use("/orders", orderRoutes);
 
 // Admin routes
 router.use("/admin/categories", adminCategoryRoutes);

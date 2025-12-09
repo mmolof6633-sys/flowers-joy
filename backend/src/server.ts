@@ -21,10 +21,12 @@ connectDB();
 
 // Middleware безопасности
 app.use(helmet());
-app.use(cors({
-  credentials: true,
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-}));
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  })
+);
 
 // Парсинг JSON и cookies
 app.use(express.json());

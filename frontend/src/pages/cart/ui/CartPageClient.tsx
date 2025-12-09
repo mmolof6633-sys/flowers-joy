@@ -244,7 +244,8 @@ export function CartPageClient() {
               variant="contained"
               fullWidth
               size="large"
-              onClick={() => router.push('/checkout')}
+              component={Link}
+              href="/checkout"
               disabled={cart.items.length === 0}
             >
               Оформить заказ
@@ -265,4 +266,3 @@ export function CartPageClient() {
     </Container>
   );
 }
-
