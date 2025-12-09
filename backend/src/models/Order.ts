@@ -96,7 +96,7 @@ const OrderSchema = new Schema<IOrder>(
     orderNumber: {
       type: String,
       unique: true,
-      required: true,
+      required: false, // Генерируется автоматически в pre-save хуке
     },
     userId: {
       type: Schema.Types.ObjectId,
@@ -191,8 +191,30 @@ const OrderSchema = new Schema<IOrder>(
 // Генерация номера заказа
 OrderSchema.pre("save", async function (this: IOrder, next: () => void) {
   if (!this.orderNumber) {
-    const count = await mongoose.model("Order").countDocuments();
-    this.orderNumber = `FL${Date.now()}${String(count + 1).padStart(4, "0")}`;
+    // Генерируем уникальный номер заказа
+    let orderNumber: string;
+    let isUnique = false;
+    let attempts = 0;
+    
+    while (!isUnique && attempts < 10) {
+      const timestamp = Date.now();
+      const random = Math.floor(Math.random() * 1000);
+      orderNumber = `FL${timestamp}${String(random).padStart(3, "0")}`;
+      
+      const existingOrder = await mongoose.model("Order").findOne({ orderNumber });
+      if (!existingOrder) {
+        isUnique = true;
+      }
+      attempts++;
+    }
+    
+    if (!isUnique) {
+      // Fallback: используем только timestamp и счетчик
+      const count = await mongoose.model("Order").countDocuments();
+      orderNumber = `FL${Date.now()}${String(count + 1).padStart(4, "0")}`;
+    }
+    
+    this.orderNumber = orderNumber!;
   }
   next();
 });
